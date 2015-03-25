@@ -26,7 +26,7 @@ use warnings;
 
 use Package::Variant
   importing => ['Moo::Role'],
-  subs      => [ 'has', 'with', 'after' ];
+  subs      => [ 'has', 'with' ];
 
 sub make_variant {
 
