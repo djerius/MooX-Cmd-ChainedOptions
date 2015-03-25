@@ -11,6 +11,8 @@ author_tests( 'xt' );
 
 tests_recursive;
 
+repository 'https://bitbucket.org/djerius/moox-cmd-chainedoptions';
+
 cpanfile;
 
 WriteAll;
