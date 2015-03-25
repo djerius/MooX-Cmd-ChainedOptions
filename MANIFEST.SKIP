@@ -10,7 +10,7 @@
 \B\.gitignore\b
 \b_darcs\b
 \B\.cvsignore$
-
+\B\.hgtags\b
 # Avoid VMS specific MakeMaker generated files
 \bDescrip.MMS$
 \bDESCRIP.MMS$
