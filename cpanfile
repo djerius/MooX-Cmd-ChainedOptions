@@ -2,7 +2,6 @@
 
 on runtime => sub {
     requires 'Import::Into';
-    requires 'Module::Runtime';
     requires 'Moo';
     requires 'Moo::Role';
     requires 'MooX::Cmd';
@@ -14,6 +13,7 @@ on runtime => sub {
 on test => sub {
 
     requires 'Test::More';
+    requires 'MooX::Cmd::Tester';
 
 };
 
