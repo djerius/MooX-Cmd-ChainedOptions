@@ -25,6 +25,7 @@ on develop => sub {
     requires 'Module::Install::AutoLicense';
     requires 'Module::Install::CPANfile';
 
+    requires 'Test::CPAN::Changes';
     requires 'Test::NoBreakpoints';
     requires 'Test::Pod';
     requires 'Test::Pod::Coverage';

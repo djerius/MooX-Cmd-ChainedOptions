@@ -4,10 +4,10 @@
 #
 # This file is part of MooX-Cmd-ChainedOptions
 #
-# MooX-Cmd-ChainedOptions is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or (at
-# your option) any later version.
+# MooX-Cmd-ChainedOptions is free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,78 +33,145 @@ use Moo::Role     ();
 use MooX::Options ();
 
 use MooX::Cmd::ChainedOptions::Role ();
-
-use Module::Runtime qw/ use_package_optimistically /;
+use List::Util qw/ first /;
 
 my %ROLE;
-
-my %optdef = ( -base => 0, -parent => 1 );
 
 sub import {
 
     my $class  = shift;
     my $target = caller;
 
-    my %opt;
-    while ( @_ ) {
-        my $opt = shift;
-        croak( "unknown import option: $opt\n" )
-          unless exists $optdef{$opt};
-        $opt{$opt} = $optdef{$opt} ? shift : 1;
-    }
+    croak( "$target must use MooX::Cmd prior to using ", __PACKAGE__, "\n" )
+      unless $target->DOES( 'MooX::Cmd::Role' );
 
+    # don't do this twice
+    return if $ROLE{$target};
+
+    # load MooX::Options into target class.
     MooX::Options->import::into( $target );
 
-    # if neither base nor parent specified , lets try and guess
+    # guess if an app or a command
 
-    $opt{-base} ||= ! $opt{-parent} && $target !~ /::Cmd::/;
+    # if $target is a cmd, a parent class (app or cmd) must have
+    # been loaded.  $target must be a direct descendant of a
+    # parent class' command_base.  use the _build_command_base method
+    # as it can be used as a class method; command_base is an object method
 
+    my ( $base, $pkg ) = $target =~ /^(.*)?::([^:]+)$/;
+    $base ||= '';
+    my $parent = first { $base eq $_->_build_command_base } keys %ROLE;
 
-    if ( $opt{-base} ) {
+    $ROLE{$target} =
+	$parent
+	     ? MooX::Cmd::ChainedOptions::Role->build_variant( $parent, $ROLE{$parent} )
+	     : __PACKAGE__ . '::Base';
 
-	croak( "$target isn't a MooX::Cmd\n" )
-	  unless Moo::Role::does_role( $target, 'MooX::Cmd::Role' );
+    # need only apply role to commands & subcommands
+    Moo::Role->apply_roles_to_package( $target, $ROLE{$target} )
+	if $parent;
 
-        $ROLE{$target} = __PACKAGE__ . '::Base';
-
-
-    }
-
-    else {
-
-        # find parent command
-        if ( !$opt{-parent} ) {
-
-            ( my $command_base = $target ) =~ s/::(?:[^:]+)$//;
-
-            # check if the standard naming scheme is used
-            if ( $command_base =~ /::Cmd/ ) {
-
-                ( my $parent = $command_base ) =~ s/::(?:[^:]+)$//;
-
-                $opt{-parent} = eval {
-                    use_package_optimistically( $parent )->_build_command_base eq
-                      $command_base && $parent
-                };
-
-                croak(
-                    "cannot determine parent command automatically; please use the parent import option\n"
-		    ) if !$opt{-parent};
-            }
-
-        }
-
-	use_package( $opt{-parent} ) unless exists $ROLE{$opt{-parent}};
-	croak( "$opt{-parent} didn't use ", __PACKAGE__, "\n" )
-	    unless exists $ROLE{$opt{-parent}};
-
-	$ROLE{$target}
-              = MooX::Cmd::ChainedOptions::Role->build_variant( $opt{-parent},
-								$ROLE{$opt{-parent} } );
-
-    }
-
-    Moo::Role->apply_roles_to_package( $target, $ROLE{$target} );
+    return;
 }
 
 1;
+
+
+__END__
+
+=pod
+
+=head1 NAME
+
+MooX::Cmd::ChainedOptions - easily access options from higher up the command chain
+
+=head1 SYNOPSIS
+
+  # MyApp.pm : App Base Class
+  use Moo;
+  use MooX::Cmd;
+  use MooX::Cmd::ChainedOptions;
+
+  option app_opt => ( is => 'ro', format => 's', default => 'BASE' );
+
+  sub execute {
+      print $_[0]->app_opt, "\n";
+  }
+
+  # MyApp/Cmd/cmd.pm : Command Class
+  package MyApp::Cmd::cmd;
+  use Moo;
+  use MooX::Cmd;
+  use MooX::Cmd::ChainedOptions;
+
+  option cmd_opt => ( is => 'ro', format => 's', default => 'A' );
+
+  sub execute {
+      print $_[0]->app_opt, "\n";
+      print $_[0]->cmd_opt, "\n";
+  }
+
+  # MyApp/Cmd/cmd/Cmd/subcmd.pm : Sub-Command Class
+  package MyApp::Cmd::cmd::Cmd::subcmd;
+  use Moo;
+  use MooX::Cmd;
+  use MooX::Cmd::ChainedOptions;
+
+  option subcmd_opt => ( is => 'ro', format => 's', default => 'B' );
+
+  sub execute {
+      print $_[0]->app_opt, "\n";
+      print $_[0]->cmd_opt, "\n";
+      print $_[0]->subcmd_opt, "\n";
+  }
+
+=head1 DESCRIPTION
+
+For applications using L<MooX::Cmd> and L<MooX::Options>,
+B<MooX::Cmd::ChainedOptions> transparently provides access to command
+line options from further up the command chain.
+
+For example, if an application provides options at each level of the
+command structure:
+
+  app --app-opt cmd --cmd-opt subcmd --subcmd-opt
+
+The B<subcmd> object will have direct access to the C<app_option> and
+C<cmd_option> options via object attributes:
+
+  sub execute {
+      print $self->app_opt, "\n";
+      print $self->cmd_opt, "\n";
+      print $self->subcmd_opt, "\n";
+  }
+
+
+=head1 USAGE
+
+Simply
+
+  use MooX::Cmd::ChainedOptions;
+
+instead of
+
+  use MooX::Options;
+
+Every layer in the application heirarchy (application class, command
+class, sub-command class) must use B<MooX::Cmd::ChainedOptions>.  See
+the L</SYNOPSIS> for an example.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2015 Smithsonian Astrophysical Observatory
+
+This software is released under the GNU General Public License.  You
+may find a copy at
+
+          http://www.gnu.org/licenses
+
+=cut
+
+=head1 AUTHOR
+
+Diab Jerius (cpan:DJERIUS) <djerius@cfa.harvard.edu>
+

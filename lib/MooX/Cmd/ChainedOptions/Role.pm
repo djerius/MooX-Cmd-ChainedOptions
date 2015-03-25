@@ -28,6 +28,13 @@ use Package::Variant
   importing => ['Moo::Role'],
   subs      => [ 'has', 'with' ];
 
+=pod
+
+=for pod-coverage
+
+=head2 make_variant
+
+=cut
 sub make_variant {
 
     my ( $class, $target, $parent, $role ) = @_;
@@ -42,3 +49,33 @@ sub make_variant {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+MooX::Cmd::ChainedOptions::Role - generate per-command roles to handle chained options
+
+=head1 DESCRIPTION
+
+This role factory builds upon L<MooX::Cmd::ChainedOptions::Base>.  It
+creates a role for each command which augments the C<_parent>
+attribute from the similar role for the next higher command in the
+command chain to handle the options from that next higher command.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2015 Smithsonian Astrophysical Observatory
+
+This software is released under the GNU General Public License.  You
+may find a copy at
+
+          http://www.gnu.org/licenses
+
+=cut
+
+=head1 AUTHOR
+
+Diab Jerius (cpan:DJERIUS) <djerius@cfa.harvard.edu>
+
+
