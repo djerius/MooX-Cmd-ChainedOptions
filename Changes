@@ -1,5 +1,10 @@
 Revision history for MooX-Cmd-ChainedOptions
 
+0.03	2015-03-27T14:00:54-0400
+
+  [BUG FIX]
+    * croak called without load of Carp
+
 0.02	2015-03-25T17:14:15-0400
 
   [BUILD]
@@ -7,5 +12,5 @@ Revision history for MooX-Cmd-ChainedOptions
 
 0.01	2015-03-25T13:54:51-0400
 
-       Initial release.
+    * Initial release.
 
