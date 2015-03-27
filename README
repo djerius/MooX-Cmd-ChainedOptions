@@ -1,18 +1,23 @@
 MooX-Cmd-ChainedOptions
 
-[ REPLACE THIS...
+    For applications using MooX::Cmd and MooX::Options,
+    MooX::Cmd::ChainedOptions transparently provides access to command
+    line options from further up the command chain.
 
-  The README is used to introduce the module and provide instructions on
-  how to install the module, any machine dependencies it may have (for
-  example C compilers and installed libraries) and any other information
-  that should be understood before the module is installed.
+    For example, if an application provides options at each level of the
+    command structure:
 
-  A README file is required for CPAN modules since CPAN extracts the
-  README file from a module distribution so that people browsing the
-  archive can use it get an idea of the modules uses. It is usually a
-  good idea to provide version information here so that people can
-  decide whether fixes for the module are worth downloading.
-]
+      app --app-opt cmd --cmd-opt subcmd --subcmd-opt
+
+    The subcmd object will have direct access to the "app_option" and
+    "cmd_option" options via object attributes:
+
+      sub execute {
+          print $self->app_opt, "\n";
+          print $self->cmd_opt, "\n";
+          print $self->subcmd_opt, "\n";
+      }
+
 
 
 INSTALLATION
@@ -33,9 +38,6 @@ perldoc command.
     perldoc MooX::Cmd::ChainedOptions
 
 
-DEPENDENCIES
-
-None.
 
 COPYRIGHT AND LICENCE
 
