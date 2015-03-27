@@ -26,8 +26,6 @@ use warnings;
 
 our $VERSION = '0.02';
 
-use Carp;
-
 use Import::Into;
 use Moo::Role     ();
 use MooX::Options ();
@@ -42,8 +40,11 @@ sub import {
     my $class  = shift;
     my $target = caller;
 
-    croak( "$target must use MooX::Cmd prior to using ", __PACKAGE__, "\n" )
-      unless $target->DOES( 'MooX::Cmd::Role' );
+    unless ( $target->DOES( 'MooX::Cmd::Role' ) ) {
+        require Carp;
+        Carp::croak( "$target must use MooX::Cmd prior to using ",
+            __PACKAGE__, "\n" );
+    }
 
     # don't do this twice
     return if $ROLE{$target};
@@ -62,14 +63,15 @@ sub import {
     $base ||= '';
     my $parent = first { $base eq $_->_build_command_base } keys %ROLE;
 
-    $ROLE{$target} =
-	$parent
-	     ? MooX::Cmd::ChainedOptions::Role->build_variant( $parent, $ROLE{$parent} )
-	     : __PACKAGE__ . '::Base';
+    $ROLE{$target}
+      = $parent
+      ? MooX::Cmd::ChainedOptions::Role->build_variant( $parent,
+        $ROLE{$parent} )
+      : __PACKAGE__ . '::Base';
 
     # need only apply role to commands & subcommands
     Moo::Role->apply_roles_to_package( $target, $ROLE{$target} )
-	if $parent;
+      if $parent;
 
     return;
 }

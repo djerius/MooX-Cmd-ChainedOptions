@@ -42,15 +42,13 @@ has _parent => (
 
         my $last;
         for ( reverse @{ $_[0]->command_chain } ) {
-
             next unless $last;
-
             return $_ if blessed $last eq $class;
-
         }
         continue { $last = $_ }
 
-        croak( "unable to determine parent in chain hierarhcy\n" );
+	require Carp;
+        Carp::croak( "unable to determine parent in chain hierarchy\n" );
     },
 );
 
