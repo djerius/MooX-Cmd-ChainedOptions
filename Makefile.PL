@@ -11,7 +11,11 @@ author_tests( 'xt' );
 
 tests_recursive;
 
-repository 'https://bitbucket.org/djerius/moox-cmd-chainedoptions';
+resources (
+   license    => 'http://www.gnu.org/licenses/gpl-3.0.html',
+   repository => 'https://bitbucket.org/djerius/moox-cmd-chainedoptions',
+   bugtracker => 'https://rt.cpan.org/Public/Dist/Display.html?Name=MooX-Cmd-ChanedOptions',
+);
 
 cpanfile;
 
