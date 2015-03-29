@@ -1,5 +1,10 @@
 Revision history for MooX-Cmd-ChainedOptions
 
+0.03_01	2015-03-28T23:07:04-0400
+
+  [DEPENDENCY FIX]
+    * requires Moo >= 1.001 for non-sub default values
+
 0.03	2015-03-27T14:00:54-0400
 
   [BUG FIX]
