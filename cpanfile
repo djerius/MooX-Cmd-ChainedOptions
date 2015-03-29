@@ -2,7 +2,7 @@
 
 on runtime => sub {
     requires 'Import::Into';
-    requires 'Moo';
+    requires 'Moo' => '1.001'; # non-sub defaults
     requires 'Moo::Role';
     requires 'MooX::Cmd';
     requires 'MooX::Options';
