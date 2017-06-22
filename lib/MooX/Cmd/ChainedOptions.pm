@@ -1,25 +1,6 @@
-# --8<--8<--8<--8<--
-#
-# Copyright (C) 2015 Smithsonian Astrophysical Observatory
-#
-# This file is part of MooX-Cmd-ChainedOptions
-#
-# MooX-Cmd-ChainedOptions is free software: you can redistribute it
-# and/or modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation, either version 3 of
-# the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-# -->8-->8-->8-->8--
-
 package MooX::Cmd::ChainedOptions;
+
+# ABSTRACT: easily access options from higher up the command chain
 
 use strict;
 use warnings;
@@ -33,11 +14,13 @@ use MooX::Options ();
 use MooX::Cmd::ChainedOptions::Role ();
 use List::Util qw/ first /;
 
+use namespace::clean;
+
 my %ROLE;
 
 sub import {
 
-    my $class  = shift;
+    shift;
     my $target = caller;
 
     unless ( $target->DOES( 'MooX::Cmd::Role' ) ) {
@@ -59,7 +42,7 @@ sub import {
     # parent class' command_base.  use the _build_command_base method
     # as it can be used as a class method; command_base is an object method
 
-    my ( $base, $pkg ) = $target =~ /^(.*)?::([^:]+)$/;
+    my ( $base ) = $target =~ /^(.*)?::([^:]+)$/;
     $base ||= '';
     my $parent = first { $base eq $_->_build_command_base } keys %ROLE;
 
@@ -78,14 +61,11 @@ sub import {
 
 1;
 
+# COPYRIGHT
 
 __END__
 
 =pod
-
-=head1 NAME
-
-MooX::Cmd::ChainedOptions - easily access options from higher up the command chain
 
 =head1 SYNOPSIS
 
@@ -158,22 +138,9 @@ instead of
 
   use MooX::Options;
 
-Every layer in the application heirarchy (application class, command
+Every layer in the application hierarchy (application class, command
 class, sub-command class) must use B<MooX::Cmd::ChainedOptions>.  See
 the L</SYNOPSIS> for an example.
 
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2015 Smithsonian Astrophysical Observatory
-
-This software is released under the GNU General Public License.  You
-may find a copy at
-
-          http://www.gnu.org/licenses
-
-=cut
-
-=head1 AUTHOR
-
-Diab Jerius (cpan:DJERIUS) <djerius@cfa.harvard.edu>
+=head1 SEE ALSO
 

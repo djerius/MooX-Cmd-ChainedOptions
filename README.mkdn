@@ -1,0 +1,98 @@
+# NAME
+
+MooX::Cmd::ChainedOptions - easily access options from higher up the command chain
+
+# VERSION
+
+version 0.03\_02
+
+# SYNOPSIS
+
+    # MyApp.pm : App Base Class
+    use Moo;
+    use MooX::Cmd;
+    use MooX::Cmd::ChainedOptions;
+
+    option app_opt => ( is => 'ro', format => 's', default => 'BASE' );
+
+    sub execute {
+        print $_[0]->app_opt, "\n";
+    }
+
+    # MyApp/Cmd/cmd.pm : Command Class
+    package MyApp::Cmd::cmd;
+    use Moo;
+    use MooX::Cmd;
+    use MooX::Cmd::ChainedOptions;
+
+    option cmd_opt => ( is => 'ro', format => 's', default => 'A' );
+
+    sub execute {
+        print $_[0]->app_opt, "\n";
+        print $_[0]->cmd_opt, "\n";
+    }
+
+    # MyApp/Cmd/cmd/Cmd/subcmd.pm : Sub-Command Class
+    package MyApp::Cmd::cmd::Cmd::subcmd;
+    use Moo;
+    use MooX::Cmd;
+    use MooX::Cmd::ChainedOptions;
+
+    option subcmd_opt => ( is => 'ro', format => 's', default => 'B' );
+
+    sub execute {
+        print $_[0]->app_opt, "\n";
+        print $_[0]->cmd_opt, "\n";
+        print $_[0]->subcmd_opt, "\n";
+    }
+
+# DESCRIPTION
+
+For applications using [MooX::Cmd](https://metacpan.org/pod/MooX::Cmd) and [MooX::Options](https://metacpan.org/pod/MooX::Options),
+**MooX::Cmd::ChainedOptions** transparently provides access to command
+line options from further up the command chain.
+
+For example, if an application provides options at each level of the
+command structure:
+
+    app --app-opt cmd --cmd-opt subcmd --subcmd-opt
+
+The **subcmd** object will have direct access to the `app_option` and
+`cmd_option` options via object attributes:
+
+    sub execute {
+        print $self->app_opt, "\n";
+        print $self->cmd_opt, "\n";
+        print $self->subcmd_opt, "\n";
+    }
+
+# USAGE
+
+Simply
+
+    use MooX::Cmd::ChainedOptions;
+
+instead of
+
+    use MooX::Options;
+
+Every layer in the application hierarchy (application class, command
+class, sub-command class) must use **MooX::Cmd::ChainedOptions**.  See
+the ["SYNOPSIS"](#synopsis) for an example.
+
+# BUGS AND LIMITATIONS
+
+You can make new bug reports, and view existing ones, through the
+web interface at [https://rt.cpan.org/Public/Dist/Display.html?Name=MooX-Cmd-ChainedOptions](https://rt.cpan.org/Public/Dist/Display.html?Name=MooX-Cmd-ChainedOptions).
+
+# AUTHOR
+
+Diab Jerius <djerius@cpan.org>
+
+# COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2017 by Smithsonian Astrophysical Observatory.
+
+This is free software, licensed under:
+
+    The GNU General Public License, Version 3, June 2007
