@@ -7,7 +7,7 @@ use Scalar::Util qw[ blessed ];
 
 use namespace::clean;
 
-our $VERSION = '0.03_02';
+our $VERSION = '0.04';
 
 has _parent => (
     is       => 'lazy',

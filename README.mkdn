@@ -4,7 +4,7 @@ MooX::Cmd::ChainedOptions - easily access options from higher up the command cha
 
 # VERSION
 
-version 0.03\_02
+version 0.04
 
 # SYNOPSIS
 
