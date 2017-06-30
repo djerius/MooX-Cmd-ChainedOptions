@@ -3,18 +3,19 @@
 use strict;
 use warnings;
 
+use Test::More;
+use Test::Fatal;
+
 use MooX::Cmd::ChainedOptions ();
 
-use Test2::Bundle::Extended;
-
 like(
-    dies { MooX::Cmd::ChainedOptions->import },
+    exception { MooX::Cmd::ChainedOptions->import },
     qr/must use MooX::Cmd/,
     'incorrect importing package'
 );
 
 {
-  package MyTest;
+  package T;
   use Moo;
   use MooX::Cmd execute_from_new => 0;
   with 'MooX::Cmd::ChainedOptions::Base';
@@ -24,7 +25,7 @@ like(
 }
 
 like(
-    dies { MyTest->new->_parent  },
+    exception { T->new->_parent },
     qr/unable to determine parent/,
     'chain parent not available (should never occur)'
 );
