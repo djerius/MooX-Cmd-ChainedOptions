@@ -3,7 +3,7 @@
 # Change command base
 
 use MooX::Cmd::Tester;
-use Test::More;
+use Test2::Bundle::Extended;
 
 use lib 't/lib';
 
