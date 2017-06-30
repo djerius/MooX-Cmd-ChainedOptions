@@ -2,6 +2,15 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.04      2017-06-22 15:19:57-04:00 America/New_York
+
+  [BUILD FIX]
+
+   * tests failed on case-insensitive file systems
+   * switch to Dist::Zilla
+   * switch to Test2
+
+
 0.03_02  2015-03-29T09:47:52-0400
 
   [DEPENDENCY FIX]
