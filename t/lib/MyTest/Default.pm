@@ -1,4 +1,4 @@
-package Default;
+package MyTest::Default;
 
 use Moo;
 use MooX::Cmd;

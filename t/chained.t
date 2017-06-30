@@ -7,7 +7,7 @@ use Test::More;
 
 use lib 't/lib';
 
-for my $class ( qw[ Default Base ] ) {
+for my $class ( qw[ MyTest::Default MyTest::Base ] ) {
 
     eval "use $class; 1" or die( "error loading $class: $@\n" );
 

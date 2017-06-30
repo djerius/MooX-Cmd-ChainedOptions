@@ -1,4 +1,4 @@
-package Default::Cmd::first::Cmd::second;
+package MyTest::Default::Cmd::first::Cmd::second;
 
 use Moo;
 use MooX::Cmd;

@@ -1,7 +1,7 @@
-package X::first;
+package MyTest::Default::Cmd::first;
 
 use Moo;
-use MooX::Cmd base => 'XX';
+use MooX::Cmd;
 use MooX::Cmd::ChainedOptions;
 
 option first_opt => (

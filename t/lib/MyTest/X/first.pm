@@ -1,13 +1,13 @@
-package XX::second;
+package MyTest::X::first;
 
 use Moo;
-use MooX::Cmd;
+use MooX::Cmd base => 'MyTest::XX';
 use MooX::Cmd::ChainedOptions;
 
-option second_opt => (
+option first_opt => (
     is      => 'ro',
     format  => 's',
-    default => 'second_opt_v',
+    default => 'first_opt_v',
 );
 
 sub execute { return $_[0] }
